@@ -4,15 +4,18 @@ public class Poit {
 
     private double lat;
     private double lon;
-    private String text;
+    private String confirmedInfections;
+    private String deaths;
+    private String recovered;
 
-    public Poit() {
-    }
 
-    public Poit(double lat, double lon, String text) {
+
+    public Poit(double lat, double lon, String confirmedInfections, String deaths, String recovered) {
         this.lat = lat;
         this.lon = lon;
-        this.text = text;
+        this.confirmedInfections = confirmedInfections;
+        this.deaths = deaths;
+        this.recovered = recovered;
     }
 
     public double getLat() {
@@ -31,11 +34,27 @@ public class Poit {
         this.lon = lon;
     }
 
-    public String getText() {
-        return text;
+    public String getConfirmedInfections() {
+        return confirmedInfections;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setConfirmedInfections(String confirmedInfections) {
+        this.confirmedInfections = confirmedInfections;
+    }
+
+    public String getDeaths() {
+        return deaths;
+    }
+
+    public void setDeaths(String deaths) {
+        this.deaths = deaths;
+    }
+
+    public String getRecovered() {
+        return recovered;
+    }
+
+    public void setRecovered(String recovered) {
+        this.recovered = recovered;
     }
 }

@@ -3,6 +3,8 @@ package pl.qubiak.covidmapbyqubiak.MapController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import pl.qubiak.covidmapbyqubiak.Parser.Covid19Parser;
+
 import java.io.IOException;
 
 @Controller
