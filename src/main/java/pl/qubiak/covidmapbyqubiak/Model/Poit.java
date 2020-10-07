@@ -9,13 +9,15 @@ public class Poit {
     private String confirmedInfections;
     private String deaths;
     private String recovered;
+    private String dataForDay;
 
-    public Poit(double lat, double lon, String confirmedInfections, String deaths, String recovered) {
+    public Poit(double lat, double lon, String confirmedInfections, String deaths, String recovered, String dataForDay) {
         this.lat = lat;
         this.lon = lon;
         this.confirmedInfections = confirmedInfections;
         this.deaths = deaths;
         this.recovered = recovered;
+        this.dataForDay = dataForDay;
     }
 
     public double getLat() {

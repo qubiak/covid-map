@@ -44,28 +44,34 @@ public class Covid19Parser {
         CSVParser deaths = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(stringReader1);
         CSVParser recovered = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(stringReader2);
 
-        List<CSVRecord> records = infections.getRecords();
-        for (int i = 0; i < records.size(); i++) {
-            double lat = Double.parseDouble(records.get(i).get("Lat"));
-            double lon = Double.parseDouble(records.get(i).get("Lon"));
-            String confirmedInfections = records.get(i).get(yesterdayDate);
-            String Deaths = deaths.getRecords().get(i).get(yesterdayDate);
-            String Recovered = recovered.getRecords().get(i).get(yesterdayDate);
-            String confirmedInfectionsDayBefore = records.get(i).get(dayBeforeYesterdayDate);
-            String DeathsDayBefore = deaths.getRecords().get(i).get(dayBeforeYesterdayDate);
-            String RecoveredDayBefore = recovered.getRecords().get(i).get(dayBeforeYesterdayDate);
+        List<CSVRecord> infectionsRecords = infections.getRecords();
+        List<CSVRecord> deathsRecords = deaths.getRecords();
+        List<CSVRecord> recoveredRecords = recovered.getRecords();
+        for (int i = 0; i < infectionsRecords.size(); i++) {
+            try {
+                double lat = Double.parseDouble(infectionsRecords.get(i).get("Lat"));
+                double lon = Double.parseDouble(infectionsRecords.get(i).get("Long"));
+                String confirmedInfections = infectionsRecords.get(i).get(yesterdayDate);
+                String Deaths = deathsRecords.get(i).get(yesterdayDate);
+                String Recovered = recoveredRecords.get(i).get(yesterdayDate);
+                String confirmedInfectionsDayBefore = infectionsRecords.get(i).get(dayBeforeYesterdayDate);
+                String DeathsDayBefore = deathsRecords.get(i).get(dayBeforeYesterdayDate);
+                String RecoveredDayBefore = recoveredRecords.get(i).get(dayBeforeYesterdayDate);
 
-            Integer  confirmedInfectionsInteger = Integer.parseInt(confirmedInfections);
-            Integer  DeathsInteger = Integer.parseInt(Deaths);
-            Integer  RecoveredInteger = Integer.parseInt(Recovered);
-            Integer  confirmedInfectionsDayBeforeInteger = Integer.parseInt(confirmedInfectionsDayBefore);
-            Integer  DeathsDayBeforeInteger = Integer.parseInt(DeathsDayBefore);
-            Integer  RecoveredDayBeforeInteger = Integer.parseInt(RecoveredDayBefore);
+                Integer confirmedInfectionsInteger = Integer.parseInt(confirmedInfections);
+                Integer DeathsInteger = Integer.parseInt(Deaths);
+                Integer RecoveredInteger = Integer.parseInt(Recovered);
+                Integer confirmedInfectionsDayBeforeInteger = Integer.parseInt(confirmedInfectionsDayBefore);
+                Integer DeathsDayBeforeInteger = Integer.parseInt(DeathsDayBefore);
+                Integer RecoveredDayBeforeInteger = Integer.parseInt(RecoveredDayBefore);
 
-            poits.add(new Poit(lat, lon, "Liczba zakażonych: " + confirmedInfections + " (" + (confirmedInfectionsInteger-confirmedInfectionsDayBeforeInteger) + ")",
-                    "Liczba zmarłych: " + Deaths + " (" + (DeathsInteger-DeathsDayBeforeInteger) + ")",
-                    "Liczba ozdrowieńców: " + Recovered + " (" + (RecoveredInteger-RecoveredDayBeforeInteger)
-                            + "Dane na dzień: " + yesterdayDate));
+                poits.add(new Poit(lat, lon, "Liczba zakażonych: " + confirmedInfections + " (" + (confirmedInfectionsInteger - confirmedInfectionsDayBeforeInteger) + ")",
+                        "Liczba zmarłych: " + Deaths + " (" + (DeathsInteger - DeathsDayBeforeInteger) + ")",
+                        "Liczba ozdrowieńców: " + Recovered + " (" + (RecoveredInteger - RecoveredDayBeforeInteger) + ")",
+                                 "Dane na dzień : " + yesterdayDate));
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
         return poits;
     }

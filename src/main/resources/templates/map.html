@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>COVID19-map</title>
+    <link rel="shortcut icon" href="https://previews.123rf.com/images/honzahruby/honzahruby2003/honzahruby200300008/143586380-coronavirus-simple-icon-vector-concept-illustration-of-covid-19-virus-flat-design-infographic-icon-w.jpg" type="image/x-icon">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
@@ -30,7 +31,11 @@
 
     points.forEach(value => {
         L.marker([value.lat, value.lon]).addTo(map)
-            .bindPopup(value.confirmedInfections);
+            .bindPopup(value.confirmedInfections + "<br>" +
+            value.deaths + "<br>" +
+            value.recovered + "<br>" +
+            value.dataForDay);
+
     })
 
 
