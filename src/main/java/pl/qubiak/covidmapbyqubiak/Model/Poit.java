@@ -1,7 +1,5 @@
 package pl.qubiak.covidmapbyqubiak.Model;
 
-import java.util.Date;
-
 public class Poit {
 
     private double lat;
@@ -10,6 +8,7 @@ public class Poit {
     private String deaths;
     private String recovered;
     private String dataForDay;
+
 
     public Poit(double lat, double lon, String confirmedInfections, String deaths, String recovered, String dataForDay) {
         this.lat = lat;
@@ -58,5 +57,13 @@ public class Poit {
 
     public void setRecovered(String recovered) {
         this.recovered = recovered;
+    }
+
+    public String getDataForDay() {
+        return dataForDay;
+    }
+
+    public void setDataForDay(String dataForDay) {
+        this.dataForDay = dataForDay;
     }
 }

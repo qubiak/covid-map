@@ -1,7 +1,6 @@
 package pl.qubiak.covidmapbyqubiak.Parser;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Covid19Parser {
@@ -36,53 +36,45 @@ public class Covid19Parser {
         String deathsValues = restTemplate.getForObject(deathsUrl, String.class);
         String recoveredValues = restTemplate.getForObject(recoveredUrl, String.class);
 
-        StringReader stringReader = new StringReader(confirmedInfectionsValues);
-        StringReader stringReader1 = new StringReader(deathsValues);
-        StringReader stringReader2 = new StringReader(recoveredValues);
+        StringReader confirmedReader = new StringReader(confirmedInfectionsValues);
+        StringReader deathsReader = new StringReader(deathsValues);
+        StringReader recoveredReader = new StringReader(recoveredValues);
 
-        CSVParser infections = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(stringReader);
-        CSVParser deaths = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(stringReader1);
-        CSVParser recovered = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(stringReader2);
+        List<CSVRecord> infections = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(confirmedReader).getRecords();
+        List<CSVRecord> deaths = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(deathsReader).getRecords();
+        List<CSVRecord> recovered = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(recoveredReader).getRecords();
 
-        List<CSVRecord> infectionsRecords = infections.getRecords();
-        List<CSVRecord> deathsRecords = deaths.getRecords();
-        List<CSVRecord> recoveredRecords = recovered.getRecords();
+        infections.forEach(infectionsRecord -> {
 
-        for (int j = 0; j < recoveredRecords.size(); j++) {
-            String country = recoveredRecords.get(j).get("Country/Region");
+            double lat = Double.parseDouble(infectionsRecord.get("Lat"));
+            double lon = Double.parseDouble(infectionsRecord.get("Long"));
+            int confirmedInfectionsNumber = Integer.parseInt(infectionsRecord.get(yesterdayDate));
+            int confirmedInfectionsNumberDayBefore = Integer.parseInt(infectionsRecord.get(dayBeforeYesterdayDate));
 
-            for (int i = 0; i < infectionsRecords.size(); i++) {
-                try {
-                    double lat = Double.parseDouble(infectionsRecords.get(i).get("Lat"));
-                    double lon = Double.parseDouble(infectionsRecords.get(i).get("Long"));
-
-                    String confirmedInfections = infectionsRecords.get(i).get(yesterdayDate);
-                    String Deaths = deathsRecords.get(i).get(yesterdayDate);
-                    String Recovered = recoveredRecords.get(i).get(yesterdayDate);
-                    String confirmedInfectionsDayBefore = infectionsRecords.get(i).get(dayBeforeYesterdayDate);
-                    String DeathsDayBefore = deathsRecords.get(i).get(dayBeforeYesterdayDate);
-                    String RecoveredDayBefore = recoveredRecords.get(i).get(dayBeforeYesterdayDate);
-
-
-                    Integer confirmedInfectionsInteger = Integer.parseInt(confirmedInfections);
-                    Integer DeathsInteger = Integer.parseInt(Deaths);
-                    Integer RecoveredInteger = Integer.parseInt(Recovered);
-                    Integer confirmedInfectionsDayBeforeInteger = Integer.parseInt(confirmedInfectionsDayBefore);
-                    Integer DeathsDayBeforeInteger = Integer.parseInt(DeathsDayBefore);
-                    Integer RecoveredDayBeforeInteger = Integer.parseInt(RecoveredDayBefore);
-
-                    poits.add(new Poit(lat, lon, "Liczba zakażonych: " + confirmedInfections + " (" + (confirmedInfectionsInteger - confirmedInfectionsDayBeforeInteger) + ")",
-                            "Liczba zmarłych: " + Deaths + " (" + (DeathsInteger - DeathsDayBeforeInteger) + ")",
-                            "Liczba ozdrowieńców: " + Recovered + " (" + (RecoveredInteger - RecoveredDayBeforeInteger) + ")",
-                            "Dane na dzień : " + yesterdayDate));
-                } catch (IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                }
+            Optional<CSVRecord> deathsRecord =
+                    deaths.stream().filter(record -> record.get("Province/State").equals(infectionsRecord.get("Province/State"))
+                            && record.get("Country/Region").equals(infectionsRecord.get("Country/Region"))).findFirst();
+            int recoveredNumber = 0, recoveredNumberDayBefore = 0, deathsNumber = 0, deathsNumberDayBefore = 0;
+            if (deathsRecord.isPresent()) {
+                deathsNumber = Integer.parseInt(deathsRecord.get().get(yesterdayDate));
+                deathsNumberDayBefore = Integer.parseInt(deathsRecord.get().get(dayBeforeYesterdayDate));
             }
 
+            Optional<CSVRecord> recoveredRecord =
+                    recovered.stream().filter(record -> record.get("Province/State").equals(infectionsRecord.get("Province/State"))
+                            && record.get("Country/Region").equals(infectionsRecord.get("Country/Region"))).findFirst();
+            if (recoveredRecord.isPresent()) {
+                recoveredNumber = Integer.parseInt(recoveredRecord.get().get(yesterdayDate));
+                recoveredNumberDayBefore = Integer.parseInt(recoveredRecord.get().get(dayBeforeYesterdayDate));
+            }
 
-        }
+            poits.add(new Poit(lat, lon,
+                    "Liczba zakażonych: " + confirmedInfectionsNumber + " (" + (confirmedInfectionsNumber - confirmedInfectionsNumberDayBefore)
+                            + ")",
+                    "Liczba zmarłych: " + deathsNumber + " (" + (deathsNumber - deathsNumberDayBefore) + ")",
+                    "Liczba ozdrowieńców: " + recoveredNumber + " (" + (recoveredNumber - recoveredNumberDayBefore) + ")",
+                    "Dane na dzień : " + yesterday));
+        });
         return poits;
     }
-
 }

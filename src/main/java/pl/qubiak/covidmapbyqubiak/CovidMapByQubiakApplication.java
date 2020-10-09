@@ -9,5 +9,4 @@ public class CovidMapByQubiakApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CovidMapByQubiakApplication.class, args);
 	}
-
 }
