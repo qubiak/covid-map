@@ -8,15 +8,26 @@ public class Poit {
     private String deaths;
     private String recovered;
     private String dataForDay;
+    private String activeCases;
 
 
-    public Poit(double lat, double lon, String confirmedInfections, String deaths, String recovered, String dataForDay) {
+    public String getActiveCases() {
+        return activeCases;
+    }
+
+    public void setActiveCases(String activeCases) {
+        this.activeCases = activeCases;
+    }
+
+    public Poit(double lat, double lon, String confirmedInfections, String deaths, String recovered, String activeCases, String dataForDay) {
         this.lat = lat;
         this.lon = lon;
         this.confirmedInfections = confirmedInfections;
         this.deaths = deaths;
         this.recovered = recovered;
         this.dataForDay = dataForDay;
+        this.activeCases = activeCases;
+
     }
 
     public double getLat() {

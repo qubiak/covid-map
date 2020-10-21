@@ -73,6 +73,7 @@ public class Covid19Parser {
                             + ")",
                     "Liczba zmarłych: " + deathsNumber + " (" + (deathsNumber - deathsNumberDayBefore) + ")",
                     "Liczba ozdrowieńców: " + recoveredNumber + " (" + (recoveredNumber - recoveredNumberDayBefore) + ")",
+                    "Aktywne zakażenia : " + (confirmedInfectionsNumber - (deathsNumber + recoveredNumber)),
                     "Dane na dzień : " + yesterday));
         });
         return poits;
